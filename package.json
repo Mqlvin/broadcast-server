@@ -1,0 +1,21 @@
+{
+  "name": "broadcast-server",
+  "version": "1.0.0",
+  "description": "A websocket server to broadcast data.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm -rf ./build && tsc",
+    "start": "npm run build && node build/index.js"
+  },
+  "author": "Henry",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "@types/ws": "^8.5.4",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "ws": "^8.13.0"
+  }
+}
