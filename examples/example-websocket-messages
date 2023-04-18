@@ -1,0 +1,16 @@
+{
+    "type":"broadcast",
+    "data":
+        {
+            "hopefully":"this",
+            "raw":["data", "will"],
+            "quickly":{"be":"transferred"}
+        }
+}
+// broadcast messages to other clients
+
+{
+   "type": "stats",
+   "data": "totalClients"
+}
+// requests for number of connected clients

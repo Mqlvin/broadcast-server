@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Websocket Test</title>
+        <script src="websocket-test.js"></script>
+    </head>
+
+    <body>
+        <p id="status">Not connected</p>
+        <button type="submit" onclick="connect()">Connect</button>
+
+        <br><br><br><br>
+
+        <textarea id="data" rows="4" cols="50">{"type":"broadcast", "data":{"hopefully":"this", "raw":["data", "will"], "quickly":{"be":"transferred"}}}</textarea>
+        <br><button type="submit" onclick="send()">Send</button>
+        
+
+
+    </body>
+</html>
