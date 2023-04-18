@@ -15,29 +15,29 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TemplateServer = void 0;
-var abstract_server_1 = require("../abstract_server");
-var TemplateServer = /** @class */ (function (_super) {
-    __extends(TemplateServer, _super);
-    function TemplateServer() {
+exports.ServerImpl = void 0;
+var abstract_server_1 = require("../src/server/abstract_server");
+var ServerImpl = /** @class */ (function (_super) {
+    __extends(ServerImpl, _super);
+    function ServerImpl() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    TemplateServer.prototype.onPostInit = function () {
+    ServerImpl.prototype.onPostInit = function () {
         console.log("Server loaded!");
     };
-    TemplateServer.prototype.onDataReceive = function (client, receiveData) {
+    ServerImpl.prototype.onDataReceive = function (client, receiveData) {
         console.log("Data received: " + receiveData);
         this.dataSendAll({ "response": "Thank you all for the data sent! totalclients:" + (this.clients.size) });
     };
-    TemplateServer.prototype.onClientConnect = function (client) {
+    ServerImpl.prototype.onClientConnect = function (client) {
         console.log("Client connected... (" + client.id + ")");
     };
-    TemplateServer.prototype.onClientDisconnect = function (uniqueId) {
+    ServerImpl.prototype.onClientDisconnect = function (uniqueId) {
         console.log("Client disconnected... (" + uniqueId + ")");
     };
-    TemplateServer.prototype.onMove = function () {
+    ServerImpl.prototype.onMove = function () {
         this.dataSendAll({ "moverId": "template_player_id" });
     };
-    return TemplateServer;
+    return ServerImpl;
 }(abstract_server_1.Server));
-exports.TemplateServer = TemplateServer;
+exports.ServerImpl = ServerImpl;
