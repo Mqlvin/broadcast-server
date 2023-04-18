@@ -1,33 +1,46 @@
 import { IncomingMessage } from "http";
 import { WebSocket, WebSocketServer } from "ws";
 
-import { serverImpl } from "../../index"
 import { ActiveClient } from "../../client/client";
+import { Server } from "../abstract_server";
 
-var clientConnections = new Map<ActiveClient, WebSocket>;
+export class WSServer {
+    sv: Server;
+    id: string;
+    clientConnections: Map<ActiveClient, WebSocket>;
 
-export function generateServer(id: string): WebSocketServer {
-    var wsServer = new WebSocket.Server({ port:10203, host:"0.0.0.0", path: "/active/" + id });
+    constructor(sv: Server, id: string) {
+        this.clientConnections = new Map<ActiveClient, WebSocket>;
+        this.sv = sv;
+        this.id = id;
 
-    wsServer.on("connection", (server: WebSocket, request: IncomingMessage) => {
-        var activeClient: ActiveClient = serverImpl.wsClientConnected();
-        clientConnections.set(activeClient, server);
+        this.generateServer();
+    }
 
-        server.on("error", console.error);
+    generateServer(): WebSocketServer {         //                        path: "/active/" + this.id
+        var wsServer = new WebSocket.Server({ port:10203, host:"0.0.0.0", path: "/active" });
 
-        server.on("message", async (data) => {
-            serverImpl.wsDataReceived(activeClient, data);
+        wsServer.on("connection", (server: WebSocket, request: IncomingMessage) => {
+            var activeClient: ActiveClient = this.sv.wsClientConnected();
+            this.clientConnections.set(activeClient, server);
+            this.sv.onClientConnect(activeClient);
+
+            server.on("error", console.error);
+
+            server.on("message", async (data) => {
+                this.sv.wsDataReceived(activeClient, data);
+            });
+
+            server.on("close", () => {
+                this.clientConnections.delete(activeClient);
+                this.sv.wsClientDisconnected(activeClient);
+            });
         });
 
-        server.on("close", () => {
-            clientConnections.delete(activeClient);
-            serverImpl.wsClientDisconnected(activeClient);
-        });
-    });
+        return wsServer;
+    }
 
-    return wsServer;
-}
-
-export function send(client: ActiveClient, data: any) {
-    clientConnections.get(client)?.send(JSON.stringify(data));
+    send(client: ActiveClient, data: any) {
+        this.clientConnections.get(client)?.send(JSON.stringify(data));
+    }
 }

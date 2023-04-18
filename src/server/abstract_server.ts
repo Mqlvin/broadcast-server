@@ -1,6 +1,6 @@
 import { makeRandomId } from "../util/id_util";
 import { ActiveClient } from "../client/client";
-import { send } from "./networking/ws_server";
+import { WSServer } from "./networking/ws_server";
 
 const serverIdLength: number = 8;
 const clientIdLength: number = 24;
@@ -9,14 +9,22 @@ const clientIdLength: number = 24;
 export abstract class Server {
     id: string;
     clients: Map<string, ActiveClient>;
+    websocketServer: WSServer;
 
     constructor() {
         this.id = makeRandomId(serverIdLength);
         this.clients = new Map<string, ActiveClient>;
+
+        this.websocketServer = new WSServer(this, this.id);
     }
 
     wsDataReceived(client: ActiveClient, data: any) {
-        this.onDataReceive(client, data);
+        try {
+            this.onDataReceive(client, JSON.parse(data));
+        } catch(ex) {
+            // probably not valid JSON, we shall just ignore
+            console.log(ex)
+        }   
     }
 
     wsClientConnected(): ActiveClient {
@@ -29,7 +37,8 @@ export abstract class Server {
         var newClient: ActiveClient = new ActiveClient(uniqueId);
 
         this.clients.set(uniqueId, newClient);
-        this.onClientConnect(newClient);
+        // this.onClientConnect(newClient);
+        // Moved to being handled in the ws_server.ts
 
         return newClient;
     }
@@ -65,14 +74,12 @@ export abstract class Server {
     */
 
     dataSend(client: ActiveClient, sendData: any): void {
-        send(client, sendData);
+        this.websocketServer.send(client, sendData);
     }
 
     dataSendAll(sendData: any): void {
-        console.log("starting")
         this.getAllClients().forEach((client: ActiveClient) => {
-            console.log("sending response to all clients...")
-            send(client, sendData);
+            this.websocketServer.send(client, sendData);
         });
     }
 
