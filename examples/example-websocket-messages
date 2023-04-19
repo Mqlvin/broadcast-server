@@ -14,3 +14,9 @@
    "data": "totalClients"
 }
 // requests for number of connected clients
+
+{
+    "type":"stats",
+    "data":"clientId"
+}
+// requests for the client's index, e.g. 0, 1, 2
