@@ -27,14 +27,14 @@ export abstract class Server {
         }   
     }
 
-    wsClientConnected(): ActiveClient {
+    wsClientConnected(clientIndex: number): ActiveClient {
         var uniqueId: string = "";
 
         while(uniqueId == "" || this.clients.has(uniqueId)) { // In almost every case this will only have to iterate once.
             uniqueId = makeRandomId(clientIdLength);
         }
 
-        var newClient: ActiveClient = new ActiveClient(uniqueId);
+        var newClient: ActiveClient = new ActiveClient(uniqueId, clientIndex);
 
         this.clients.set(uniqueId, newClient);
         // this.onClientConnect(newClient);

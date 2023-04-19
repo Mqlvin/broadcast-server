@@ -14,6 +14,10 @@ export class ServerImpl extends Server {
                 if(receiveData["data"].toLowerCase() == "totalclients") {
                     this.dataSend(client, {"type":"info", "data":{"totalClients":this.clients.size}});
                 }
+
+                if(receiveData["data"].toLowerCase() == "clientid") {
+                    this.dataSend(client, {"type":"info", "data":{"clientIndex":client.index}});
+                }
             }
             
             else if(receiveData["type"].toLowerCase() === "broadcast") {
